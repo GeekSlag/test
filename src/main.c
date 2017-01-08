@@ -1,14 +1,20 @@
 #include <stdio.h>
+#include <stdarg.h>
+#include <assert.h>
 #include "dbg.h"
+
+unsigned int rwcsv(char *path);
 
 int main(int argc, char *argv[])
 {
-	unsigned char c = 0;
+	//assert(argc == 2);
 
-	prt_asterisk(32);
-	PRT_VAR(c);
-	PRT_VAR(0x0101^0x0);
-	prt_asterisk(32);
+	//prt_asterisk();
+	//rwcsv(argv[1]);
+	//prt_asterisk();
+
+	DBG_LOG("Hello test...\n");
+	//prt_args("%s %d\n", argv[0], argc);
 
 	return 0;
 }

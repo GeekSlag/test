@@ -1,7 +1,7 @@
 # Makefile for test
 
 CC = gcc
-CFLAGS = -I$(IDIR)
+CFLAGS = -g -Wall -I$(IDIR)
 
 IDIR = include
 ODIR = obj
@@ -13,7 +13,7 @@ LIBS =
 _DEPS = dbg.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJS = main.o dbg.o
+_OBJS = main.o dbg.o rwcsv.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
 
 TARGET = demo
