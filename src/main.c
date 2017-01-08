@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdarg.h>
+//#include <stdarg.h>
 #include <assert.h>
 #include "dbg.h"
 
@@ -7,14 +7,11 @@ unsigned int rwcsv(char *path);
 
 int main(int argc, char *argv[])
 {
-	//assert(argc == 2);
+	unsigned int ret = 0;
 
-	//prt_asterisk();
-	//rwcsv(argv[1]);
-	//prt_asterisk();
+	assert(argc == 2);
+	ret = rwcsv(argv[1]);
+	PRT_VAR("%#x\n", ret);
 
-	DBG_LOG("Hello test...\n");
-	//prt_args("%s %d\n", argv[0], argc);
-
-	return 0;
+	return ret;
 }

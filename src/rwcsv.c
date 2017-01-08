@@ -13,9 +13,13 @@ unsigned int rwcsv(char *path)
 	fp = fopen(path, "rw");
 	assert(NULL != fp);
 
-	str_tmp = fgets(line, 1024, fp);
-	PRT_VAR("%s", line);
-	PRT_VAR("%s", str_tmp);
+	while ((str_tmp = fgets(line, 1024, fp))) {
+		PRT_VAR("%s\n", line);
+		//PRT_VAR("%s\n", str_tmp);
+		fp++;
+	}
+
+	fclose(fp);
 
 	return 0;
 }
