@@ -2,26 +2,26 @@
 #define LIST_H
 
 /* Define a structure for linked list elements. */
-typedef struct list_elmt {
+struct list_elmt {
 	void *data;
 	struct list_elmt *next;
-} list_elmt_t;
+};
 
 /* Define a structure for linked list. */
-typedef struct {
+struct list {
 	int size;
-	int elmt_size;
 	int (*match)(const void *key1, const void *key2);
-	list_elmt_t *head;
-	list_elmt_t *tail;
-} list_t;
+    void (*destroy)(void *data);
+	struct list_elmt *head;
+	struct list_elmt *tail;
+};
 
 /* Public Interface */
-void list_init(list_t *list, int elmt_size, int (*match)(const void *key1, const void *key2));
-void list_destroy(list_t *list);
-int list_insert(list_t *list, const void *key, const void *data);
-int list_remove(list_t *list, const void *key);
-int list_search(list_t *list, const void *key, void *data);
+void list_init(struct list *list, void (*destroy)(void *data), int (*match)(const void *key1, const void *key2));
+void list_destroy(struct list *list);
+int list_insert(struct list *list, const void *data);
+int list_remove(struct list *list, const void *data);
+void *list_search(struct list *list, const void *key);
 
 #define list_size(list) ((list)->size)
 #define list_head(list) ((list)->head)

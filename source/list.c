@@ -4,10 +4,10 @@
 #include "list.h"
 
 /* Complexity: O(1) */
-void list_init(list_t *list, int elmt_size, int (*match)(const void *key1, const void *key2))
+void list_init(struct list *list, void (*destroy)(void *data), int (*match)(const void *key1, const void *key2))
 {
 	list->size = 0;
-	list->elmt_size = elmt_size;
+    list->destroy = destroy;
 	list->match = match;
 	list->head = NULL;
 	list->tail = NULL;
@@ -16,29 +16,29 @@ void list_init(list_t *list, int elmt_size, int (*match)(const void *key1, const
 }
 
 /* Complexity: O(n) */
-void list_destroy(list_t *list)
+void list_destroy(struct list *list)
 {
-	while (list_size(list) > 0)
-		list_remove(list, NULL);
-
-	memset(list, 0, sizeof(list_t));
+    list_remove(list, NULL);
+	memset(list, 0, sizeof(struct list));
+    
 	return;
 }
 
 /* Complexity: O(1) */
-int list_insert(list_t *list, const void *key, const void *data)
+int list_insert(struct list *list, const void *data)
 {
-	list_elmt_t *new_element;
+	struct list_elmt *new_element;
 
-	if (key == NULL) {
-		if ((new_element = (list_elmt_t *)malloc(sizeof(list_elmt_t))) == NULL)
-			return -1;
+    new_element = list_search(list, data);
+    if (new_element) {
+        new_element->data = (void *)data;
+        return 0;
+    }
 
-		if ((new_element->data = (void *)malloc(list->elmt_size)) == NULL)
-			return -1;
-	}
+    if ((new_element = (struct list_elmt *)malloc(sizeof(struct list_elmt))) == NULL)
+        return -1;
 
-	memcpy(new_element->data, data, list->elmt_size);
+    new_element->data = (void *)data;
 	if (list_size(list) == 0)
 		list->tail = new_element;
 
@@ -50,39 +50,38 @@ int list_insert(list_t *list, const void *key, const void *data)
 }
 
 /* Complexity: O(n) */
-int list_remove(list_t *list, const void *key)
+int list_remove(struct list *list, const void *data)
 {
-	list_elmt_t *old_element;
-	list_elmt_t *prev_element;
+	struct list_elmt *old_element;
+	struct list_elmt *prev_element;
 
 	if (list_size(list) == 0)
 		return -1;
 
+	prev_element = list->head;
 	old_element = list->head;
 	while (old_element != NULL) {
-		if (key == NULL)
+		if (!data)
 			list->head = old_element->next;
-		else 
-		{
-			if (list->match(key, old_element->data) == 0) {
+		else {
+			if (!list->match(data, old_element->data)) {
 				prev_element = old_element;
 				old_element = old_element->next;
 				continue;
 			}
+
+            prev_element->next = old_element->next;
 		}
 
 		if (list_size(list) == 1)
 			list->tail = NULL;
 
-		if (prev_element != NULL)
-			prev_element->next = old_element->next;
-
 		if (old_element == list->head)
 			list->head = old_element->next;
 
-		free(old_element->data);
+        if (list->destroy)
+            list->destroy(old_element->data);
 		free(old_element);
-		memset(old_element, 0, sizeof(list_elmt_t));
 		old_element = old_element->next;
 		list->size--;
 	}
@@ -91,72 +90,17 @@ int list_remove(list_t *list, const void *key)
 }
 
 /* Complexity: O(n) */
-int list_search(list_t *list, const void *key, void *data)
+void *list_search(struct list *list, const void *key)
 {
-	list_elmt_t *element;
+	struct list_elmt *element;
 
 	element = list->head;
 	while (element != NULL) {
-		if (list->match != NULL && list->match(key, element->data) == 1) {
-			memcpy(data, element->data, list->elmt_size);
-			return 0;
-		}
+		if (list->match && list->match(key, element->data))
+			return element->data;
 
 		element = element->next;
 	}
 
-	return -1;
+	return NULL;
 }
-
-/*
- * test functions
- *
- */
-void list_prt(list_t *list)
-{
-	list_elmt_t *elmt;
-
-	elmt = list_head(list);
-	printf("-------------------------------\n");
-	printf("|LIST| size : %d\n", list_size(list));
-	while (elmt != NULL) {
-		printf("\n");
-		printf("|LIST| data : %p\n", elmt->data);
-		printf("|LIST| curr : %p\n", elmt);
-		printf("|LIST| next : %p\n", elmt->next);
-		elmt = elmt->next;
-	}
-	printf("-------------------------------\n\n");
-
-	return;
-}
-
-int list_match(const void *key1, const void *key2)
-{
-	int res = 0;
-
-	res = memcmp((void *)key1, (void *)key2, sizeof(int));
-
-	return res == 0 ? 1 : 0;
-}
-
-void list_test(void)
-{
-	list_t list;
-	int array[10] = {1, 2, 3, 4, 5, 6};
-	int key = 3;
-
-	list_init(&list, sizeof(int), list_match);
-	list_prt(&list);
-
-	list_insert(&list, NULL, &array[0]);
-	list_insert(&list, NULL, &array[1]);
-	list_insert(&list, NULL, &array[2]);
-	list_prt(&list);
-
-	list_remove(&list, &key);
-	list_prt(&list);
-
-	return;
-}
-

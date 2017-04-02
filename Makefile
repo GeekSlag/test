@@ -9,10 +9,10 @@ LDIR = lib
 SDIR = source
 LIBS =
 
-_DEPS = debug.h dlist.h
+_DEPS = debug.h dlist.h list.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJS = main.o debug.o dlist.o
+_OBJS = main.o debug.o dlist.o list.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
 
 TARGET = a.out
