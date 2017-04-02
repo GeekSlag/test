@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdarg.h>
-#include <string.h>
-#include "dbg.h"
+//#include <string.h>
+#include "debug.h"
 
 void prt_asterisk(void)
 {

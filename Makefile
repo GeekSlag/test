@@ -6,17 +6,16 @@ CFLAGS = -g -Wall -I$(IDIR)
 IDIR = include
 ODIR = obj
 LDIR = lib
-SDIR = src
-
+SDIR = source
 LIBS =
 
-_DEPS = dbg.h
+_DEPS = debug.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJS = main.o dbg.o rwcsv.o
+_OBJS = main.o debug.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
 
-TARGET = demo
+TARGET = a.out
 
 $(TARGET) : $(OBJS)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
