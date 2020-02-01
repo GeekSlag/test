@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
-#include "dbg.h"
+//#include "dbg.h"
 
 unsigned int rwcsv(char *path)
 {
@@ -14,7 +14,7 @@ unsigned int rwcsv(char *path)
 	assert(NULL != fp);
 
 	while ((str_tmp = fgets(line, 1024, fp))) {
-		PRT_VAR("%s\n", line);
+		//PRT_VAR("%s\n", line);
 		//PRT_VAR("%s\n", str_tmp);
 		fp++;
 	}
